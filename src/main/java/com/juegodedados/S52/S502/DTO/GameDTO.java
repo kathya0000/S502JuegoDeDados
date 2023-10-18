@@ -23,8 +23,5 @@ public class GameDTO {
     @NotNull(message = "El ID del jugador no puede ser nulo")
     private Long playerId; // Esto asume que cada juego está asociado a un jugador
 
-   /* @NotNull(message = "El ID del jugador no puede ser nulo")
-    public Long getPlayerId() {
-        return playerId;
-    }*/
+
 }

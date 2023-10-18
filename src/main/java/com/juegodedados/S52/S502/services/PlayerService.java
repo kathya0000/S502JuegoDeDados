@@ -9,11 +9,11 @@ import com.juegodedados.S52.S502.models.GameModel;
 import com.juegodedados.S52.S502.models.PlayerModel;
 import com.juegodedados.S52.S502.repositories.GameRepository;
 import com.juegodedados.S52.S502.repositories.PlayerRepository;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 import static com.juegodedados.S52.S502.DTO.PlayerConverter.convertToDTO;
 
 @Service
+@Setter
+@Getter
 public class PlayerService {
 
     @Autowired
@@ -50,11 +52,6 @@ public class PlayerService {
         return playerModelOptional.map(PlayerConverter::convertToDTO);
     }
 
-   /* public PlayerDTO createPlayer(String name){
-        PlayerModel playerModel = new PlayerModel(name);
-        playerModel = playerRepository.save(playerModel);
-        return convertToDTO(playerModel);
-    }*/
    public PlayerDTO createPlayer(PlayerDTO playerDTO) {
        String hashedPassword = passwordEncoder.encode(playerDTO.getPassword());// Codificar la contraseña antes de guardarla
 
@@ -66,6 +63,7 @@ public class PlayerService {
        // Convertir el modelo guardado de nuevo a DTO para devolverlo (sin la contraseña)
        return PlayerConverter.convertToDTO(playerModel);
    }
+
 
     public PlayerDTO updatePlayerName(Long playerId, String newName){
         PlayerModel playerModel = playerRepository.findById(playerId)
@@ -136,7 +134,10 @@ public class PlayerService {
         return (games.size() > 0) ? ((double) winCount / games.size()) * 100 : 0;
     }
 
+    public List<PlayerModel> getAllPlayers() {
+        return null;
     }
+}
 
 
 

@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/players")
 public class PlayerController {
+    @Autowired
     private final PlayerService playerService;
 
     @Autowired

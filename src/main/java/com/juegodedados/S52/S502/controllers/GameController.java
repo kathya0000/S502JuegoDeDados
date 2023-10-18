@@ -1,8 +1,8 @@
 package com.juegodedados.S52.S502.controllers;
 
 import com.juegodedados.S52.S502.DTO.GameDTO;
-import com.juegodedados.S52.S502.exceptions.PlayerNotFoundException;
 import com.juegodedados.S52.S502.services.GameService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,15 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/players/{playerId}/games")
 public class GameController {
 
+   @Autowired
     private final GameService gameService;
 
-    @Autowired
-    private GameController(GameService gameService){
-        this.gameService = gameService;
-    }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<GameDTO> createGame(@PathVariable Long playerId) {

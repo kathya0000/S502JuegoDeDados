@@ -11,6 +11,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -40,6 +41,11 @@ public class PlayerModel {
 
     @OneToMany(mappedBy = "playerModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GameModel> games = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "player_roles", joinColumns = @JoinColumn(name = "player_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
 
     public PlayerModel(String name){
         this.name = (name == null || name.trim().isEmpty())? "ANONIMO" : name.trim();
