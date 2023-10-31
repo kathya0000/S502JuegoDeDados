@@ -5,7 +5,6 @@ import com.juegodedados.S52.S502.services.GameService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,20 +19,20 @@ public class GameController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<GameDTO> createGame(@PathVariable Long playerId) {
+    public GameDTO createGame(@PathVariable Long playerId) {
         GameDTO newGame = gameService.createGame(playerId);
-        return new ResponseEntity<>(newGame, HttpStatus.CREATED);
+        return gameService.createGame(playerId);
     }
 
     @GetMapping
-    public ResponseEntity<List<GameDTO>> getGamesByPlayerId(@PathVariable Long playerId) {
+    public List<GameDTO> getGamesByPlayerId(@PathVariable Long playerId) {
         List<GameDTO> games = gameService.getGamesByPlayerId(playerId);
-        return new ResponseEntity<>(games, HttpStatus.OK);
+        return gameService.getGamesByPlayerId(playerId);
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteGamesByPlayerId(@PathVariable Long playerId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGamesByPlayerId(@PathVariable Long playerId) {
         gameService.deleteGamesByPlayerId(playerId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

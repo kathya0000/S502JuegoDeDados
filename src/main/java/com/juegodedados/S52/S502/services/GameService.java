@@ -8,6 +8,8 @@ import com.juegodedados.S52.S502.exceptions.PlayerNotFoundException;
 import com.juegodedados.S52.S502.models.GameModel;
 import com.juegodedados.S52.S502.models.PlayerModel;
 import com.juegodedados.S52.S502.repositories.GameRepository;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +17,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Setter
+@Getter
 public class GameService {
 
-    @Autowired
+
     private final GameRepository gameRepository;
-
-    @Autowired
-    private final PlayerService playerService; // Usamos PlayerService en lugar de PlayerRepository
-
+    private final PlayerService playerService;
     @Autowired
     public GameService(GameRepository gameRepository, PlayerService playerService){
         this.gameRepository = gameRepository;

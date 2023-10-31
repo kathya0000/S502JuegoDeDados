@@ -19,29 +19,28 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.juegodedados.S52.S502.DTO.PlayerConverter.convertToDTO;
+
 
 @Service
 @Setter
 @Getter
 public class PlayerService {
 
-    @Autowired
-    private final PlayerRepository playerRepository;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    @Autowired
+    private final PlayerRepository playerRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
     private final GameRepository gameRepository;
 
     @Autowired
-    public PlayerService(PlayerRepository playerRepository, GameRepository gameRepository){
+    public PlayerService(PlayerRepository playerRepository, GameRepository gameRepository, BCryptPasswordEncoder passwordEncoder){
         this.playerRepository = playerRepository;
         this.gameRepository = gameRepository;
+        this.passwordEncoder = passwordEncoder;
     }
     public PlayerDTO savePlayer(PlayerDTO playerDTO){
         PlayerModel playerModel = PlayerConverter.convertToEntity(playerDTO);
         playerModel = playerRepository.save(playerModel);
-        return convertToDTO(playerModel);
+        return PlayerConverter.convertToDTO(playerModel);
     }
     public Optional<PlayerDTO> findPlayerByName(String name){
         Optional<PlayerModel> playerModelOptional = playerRepository.findByName(name);
@@ -55,13 +54,14 @@ public class PlayerService {
    public PlayerDTO createPlayer(PlayerDTO playerDTO) {
        String hashedPassword = passwordEncoder.encode(playerDTO.getPassword());// Codificar la contraseña antes de guardarla
 
-       // Convertir DTO a modelo
        PlayerModel playerModel = PlayerConverter.convertToEntity(playerDTO);
        playerModel.setPassword(hashedPassword); // Establecer la contraseña encriptada
 
        playerRepository.save(playerModel);
        // Convertir el modelo guardado de nuevo a DTO para devolverlo (sin la contraseña)
-       return PlayerConverter.convertToDTO(playerModel);
+       PlayerDTO resultDTO = PlayerConverter.convertToDTO(playerModel);
+       resultDTO.setPassword(null);// eliminar la contraseña del DTO resultante
+       return resultDTO;
    }
 
 
@@ -70,7 +70,7 @@ public class PlayerService {
                 .orElseThrow(() -> new PlayerNotFoundException("Player no encontrado"));
         playerModel.setName(newName);
         playerModel = playerRepository.save(playerModel);
-        return convertToDTO(playerModel);
+        return PlayerConverter.convertToDTO(playerModel);
     }
     public GameDTO createGameForPlayer(Long playerId){
         PlayerModel playerModel = playerRepository.findById(playerId)
@@ -90,7 +90,7 @@ public class PlayerService {
     public List<PlayerDTO> getAllPlayersWithSuccessRate(){
         List<PlayerModel> playerModels = playerRepository.findAll();
         return playerModels.stream()
-                .map(PlayerConverter::convertToDTOWithSuccessRate) // Necesitarás agregar este método en PlayerConverter
+                .map(PlayerConverter::convertToDTOWithSuccessRate)
                 .collect(Collectors.toList());
     }
     public List<GameDTO> getGamesForPlayer(Long playerId) throws PlayerNotFoundException {
@@ -134,9 +134,7 @@ public class PlayerService {
         return (games.size() > 0) ? ((double) winCount / games.size()) * 100 : 0;
     }
 
-    public List<PlayerModel> getAllPlayers() {
-        return null;
-    }
+
 }
 
 

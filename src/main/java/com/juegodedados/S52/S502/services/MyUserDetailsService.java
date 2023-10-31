@@ -15,15 +15,19 @@ import java.util.Optional;
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 
+    private final PlayerRepository playerRepository;
+
     @Autowired
-    private PlayerRepository playerRepository;
+    public MyUserDetailsService(PlayerRepository playerRepository) {
+        this.playerRepository = playerRepository;
+    }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<PlayerModel> player = playerRepository.findByName(username);
-        if (!player.isPresent()) {
-            throw new UsernameNotFoundException("Usuario no encontrado: " + username);
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+        Optional<PlayerModel> player = playerRepository.findByName(name);
+        if (player.isPresent()) {
+            return new User(player.get().getName(), "", new ArrayList<>());
         }
-        return new User(player.get().getName(), "", new ArrayList<>());
+        throw new UsernameNotFoundException("Usuario no encontrado: " + name);
     }
 }

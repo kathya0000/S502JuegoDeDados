@@ -16,15 +16,6 @@ public class PlayerConverter {
         return playerDTO;
     }
 
-    public static GameDTO convertToDTO(GameModel game) {
-        GameDTO dto = new GameDTO();
-        dto.setId(game.getId());
-        dto.setDado1(game.getDado1());
-        dto.setDado2(game.getDado2());
-        dto.setWin(game.isWin());
-        return dto;
-    }
-
     public static PlayerModel convertToEntity(PlayerDTO playerDTO) {
         PlayerModel playerModel = new PlayerModel();
         playerModel.setName(playerDTO.getName());

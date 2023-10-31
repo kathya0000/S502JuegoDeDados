@@ -4,6 +4,7 @@ import com.juegodedados.S52.S502.DTO.GameDTO;
 import com.juegodedados.S52.S502.DTO.PlayerDTO;
 import com.juegodedados.S52.S502.services.PlayerService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,68 +14,56 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/players")
+@AllArgsConstructor
 public class PlayerController {
-    @Autowired
+   @Autowired
     private final PlayerService playerService;
 
-    @Autowired
-    private PlayerController(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
     @PostMapping
-    public ResponseEntity<PlayerDTO> createPlayer(@Valid @RequestBody PlayerDTO playerDTO) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public PlayerDTO createPlayer(@Valid @RequestBody PlayerDTO playerDTO) {
        PlayerDTO createdPlayer = playerService.createPlayer(playerDTO);
-        return new ResponseEntity<>(createdPlayer, HttpStatus.CREATED);
+        return playerService.createPlayer(playerDTO);
     }
-
-
 
     @PutMapping("/{id}")
-    public ResponseEntity<PlayerDTO> updatePlayerName(@PathVariable Long id, @Valid @RequestBody PlayerDTO playerDTO) {
-        PlayerDTO updatedPlayer = playerService.updatePlayerName(id, playerDTO.getName());
-        return new ResponseEntity<>(updatedPlayer, HttpStatus.OK);
+    public PlayerDTO updatePlayerName(@PathVariable Long id, @Valid @RequestBody PlayerDTO playerDTO) {
+        return playerService.updatePlayerName(id, playerDTO.getName());
     }
 
     @PostMapping("/{id}/games")
-    public ResponseEntity<GameDTO> playGame(@PathVariable Long id) {
-        GameDTO gameResult = playerService.createGameForPlayer(id);
-        return new ResponseEntity<>(gameResult, HttpStatus.CREATED);
+    public GameDTO playGame(@PathVariable Long id) {
+        return playerService.createGameForPlayer(id);
     }
 
     @DeleteMapping("/{id}/games")
-    public ResponseEntity<Void> deleteGamesForPlayer(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGamesForPlayer(@PathVariable Long id) {
         playerService.deleteGamesForPlayer(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping
-    public ResponseEntity<List<PlayerDTO>> getAllPlayers() {
-        List<PlayerDTO> players = playerService.getAllPlayersWithSuccessRate();
-        return new ResponseEntity<>(players, HttpStatus.OK);
+    public List<PlayerDTO> getAllPlayers() {
+        return playerService.getAllPlayersWithSuccessRate() ;
     }
 
     @GetMapping("/{id}/games")
-    public ResponseEntity<List<GameDTO>> getGamesForPlayer(@PathVariable Long id) {
-        List<GameDTO> games = playerService.getGamesForPlayer(id);
-        return new ResponseEntity<>(games, HttpStatus.OK);
+    public List<GameDTO> getGamesForPlayer(@PathVariable Long id) {
+        return playerService.getGamesForPlayer(id) ;
     }
 
     @GetMapping("/ranking")
-    public ResponseEntity<Double> getAverageRanking() {
-        Double averageRanking = playerService.getAverageRanking();
-        return new ResponseEntity<>(averageRanking, HttpStatus.OK);
+    public Double getAverageRanking() {
+        return playerService.getAverageRanking();
     }
 
     @GetMapping("/ranking/loser")
-    public ResponseEntity<PlayerDTO> getLoserPlayer() {
-        PlayerDTO loserPlayer = playerService.getLoserPlayer();
-        return new ResponseEntity<>(loserPlayer, HttpStatus.OK);
+    public PlayerDTO getLoserPlayer() {
+        return playerService.getLoserPlayer();
     }
 
     @GetMapping("/ranking/winner")
-    public ResponseEntity<PlayerDTO> getWinnerPlayer() {
-        PlayerDTO winnerPlayer = playerService.getWinnerPlayer();
-        return new ResponseEntity<>(winnerPlayer, HttpStatus.OK);
+    public PlayerDTO getWinnerPlayer() {
+        return playerService.getWinnerPlayer();
     }
 }
